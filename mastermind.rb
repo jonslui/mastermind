@@ -6,10 +6,25 @@ class Game
         @turn = 0
     end
 
-    def start_game
+    def start_player_game
         @secret_code = []
         4.times { secret_code << @colors[rand(0..3)] }
     end
+
+    def start_computer_game
+        @secret_code = []
+        puts "Input your secret code."
+        while @secret_code.length < 4
+                print "#{@secret_code.length}: "
+                choice = gets.downcase.chomp
+                if choice == ("red") || choice == ("blue") || choice == ("green") || choice == ("white")
+                    @secret_code << choice
+                else
+                    puts "Choose red, blue, green, or white."
+                end 
+        end
+    end
+
 
     def check_for_win(players_guesses, current_games_secret_code)
         if players_guesses == current_games_secret_code
@@ -18,9 +33,6 @@ class Game
         else
             correct_location = 0
             correct_color = 0
-
-            # put current_games_secret_code into a tmp array and then delete the instance if it matchs the location?
-            # if  > # of secret_code red than == red
 
             4.times do |x|
                 if current_games_secret_code[x] == players_guesses[x]
@@ -34,9 +46,8 @@ class Game
             return false
         end
     end
-
-
 end
+
 
 class Player
     attr_accessor :guesses
@@ -77,6 +88,7 @@ class Player
     end
 end
 
+
 class Computer < Player
     def initialize
         @colors = ["red", "blue", "green", "white"]
@@ -87,24 +99,51 @@ class Computer < Player
         4.times do
            @guesses << @colors[rand(0..3)]
         end
+    end
+end
 
-        # puts @guesses
+
+
+play_again = true
+while play_again == true
+
+    puts "Do you want to guess, or do you want to create the code?"
+    check = ""
+
+    until check == "guess" || check == "create"
+        print "Choose guess or create: "
+        check = gets.downcase.chomp
+    end
+
+    if check == "guess"
+        current_game = Game.new
+        testplayer = Player.new
+        current_game.start_player_game
+        testplayer.guess_number(current_game)
+    else
+        current_game = Game.new
+        testcomputer = Computer.new
+        current_game.start_computer_game
+        testcomputer.guess_number(current_game)
+    end
+
+
+    until check == "Y" || check == "N"
+        print "Play again? Y/N: "
+        check = gets.upcase.chomp
+    end
+
+    if check == "Y"
+        play_again = true
+    else 
+        play_again = false
     end
 
 end
 
-# add functionality where you 
 
 
-# add a "Continue playing? option"
 
-# current_game = Game.new
-# testplayer = Player.new
-# current_game.start_game
-# testplayer.guess_number(current_game)
-
-
-current_game = Game.new
-testcomputer = Computer.new
-current_game.start_game
-testcomputer.guess_number(current_game)
+# add method that recognizes response and acts according to it
+# fix correct color but wrong location section, might already be correct
+# have it say which is the right color/wrong location directly where it is from?
