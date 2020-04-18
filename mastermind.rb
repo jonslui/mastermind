@@ -20,7 +20,7 @@ class Game
             correct_color = 0
 
             # put current_games_secret_code into a tmp array and then delete the instance if it matchs the location?
-
+            # if  > # of secret_code red than == red
 
             4.times do |x|
                 if current_games_secret_code[x] == players_guesses[x]
@@ -31,7 +31,7 @@ class Game
             end
             puts "#{correct_location} in the correct spot"
             puts "#{correct_color} of correct color but wrong location"
-           return false
+            return false
         end
     end
 
@@ -40,6 +40,7 @@ end
 
 class Player
     attr_accessor :guesses
+
     def initialize
         @guesses = []
     end
@@ -74,11 +75,36 @@ class Player
             puts current_game.secret_code
         end
     end
+end
+
+class Computer < Player
+    def initialize
+        @colors = ["red", "blue", "green", "white"]
+    end
+
+    def choose
+        @guesses = []
+        4.times do
+           @guesses << @colors[rand(0..3)]
+        end
+
+        # puts @guesses
+    end
 
 end
 
+# add functionality where you 
+
+
+# add a "Continue playing? option"
+
+# current_game = Game.new
+# testplayer = Player.new
+# current_game.start_game
+# testplayer.guess_number(current_game)
+
 
 current_game = Game.new
-testplayer = Player.new
+testcomputer = Computer.new
 current_game.start_game
-testplayer.guess_number(current_game)
+testcomputer.guess_number(current_game)
