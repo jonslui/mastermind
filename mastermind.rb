@@ -25,27 +25,62 @@ class Game
         end
     end
 
+    def convert_to_hash(array)
+        hash = {}
+        array.each_with_index do |color, index| 
+            if hash[color] == nil
+                hash[color] = []
+                hash[color] << index
+            else
+                hash[color] << index
+            end
+        end
+        hash
+    end
+
+    def check_for_correct_location_or_color(players_guesses, current_games_secret_code)
+        guesses_hash = convert_to_hash(players_guesses)
+        code_hash = convert_to_hash(current_games_secret_code)
+
+        correct_location = 0
+        correct_color = 0
+
+        code_hash.each do |key, value| 
+            if guesses_hash.has_key?(key) == true
+                correct_location_count_for_current_key = 0
+                correct_color_count_for_current_key = 0
+                guesses_hash[key].length.times do |number|
+                    if code_hash[key].include?(guesses_hash[key][number])
+                        correct_location_count_for_current_key +=1                    
+                    else
+                        correct_color_count_for_current_key +=1
+                    end
+                end
+    
+                if correct_location_count_for_current_key + correct_color_count_for_current_key > code_hash[key].length 
+                    correct_color_count_for_current_key = code_hash[key].length - correct_location_count_for_current_key
+                end
+                correct_location += correct_location_count_for_current_key
+                correct_color += correct_color_count_for_current_key
+            end
+        end
+
+        puts "#{correct_location} in the correct location"
+        puts "#{correct_color} of the correct color but wrong location"
+        puts " "
+
+    end
 
     def check_for_win(players_guesses, current_games_secret_code)
         if players_guesses == current_games_secret_code
             puts "Great job! You won!"
             return true
         else
-            correct_location = 0
-            correct_color = 0
-
-            4.times do |x|
-                if current_games_secret_code[x] == players_guesses[x]
-                    correct_location += 1
-                elsif current_games_secret_code.include?(players_guesses[x])
-                    correct_color += 1
-                end
-            end
-            puts "#{correct_location} in the correct spot"
-            puts "#{correct_color} of correct color but wrong location"
+            check_for_correct_location_or_color(players_guesses, current_games_secret_code)
             return false
         end
     end
+
 end
 
 
@@ -99,6 +134,7 @@ class Computer < Player
         4.times do
            @guesses << @colors[rand(0..3)]
         end
+        puts @guesses
     end
 end
 
@@ -140,10 +176,3 @@ while play_again == true
     end
 
 end
-
-
-
-
-# add method that recognizes response and acts according to it
-# fix correct color but wrong location section, might already be correct
-# have it say which is the right color/wrong location directly where it is from?
